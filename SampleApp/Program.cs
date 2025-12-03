@@ -32,9 +32,9 @@ internal static class DemoApp
         {
             Trace.WriteLine($"Iteration {i + 1}/{count}");
             await worker.FetchTelemetryAsync();
-            _ = await worker.ComputeAsync();
+            _ = await worker.Compute();
         }
-        
+
         foreach (var entry in repository.GetAll())
         {
             Trace.WriteLine($"[{entry.Timestamp:O}] {entry.Source} -> {entry.Payload.Length} chars");
@@ -57,10 +57,10 @@ internal sealed class BackgroundWorker
     {
         var snapshot = await _apiClient.GetLatestTelemetryAsync();
         await _repository.SaveAsync(snapshot);
-        Trace.WriteLine($"Telemetry fetched from {snapshot.Source}.");
+        Console.WriteLine($"Telemetry fetched from {snapshot.Source}.");
     }
 
-    public async Task<int> ComputeAsync()
+    public async Task<int> Compute()
     {
         await Task.Delay(50);
         return Random.Shared.Next(0, 100);

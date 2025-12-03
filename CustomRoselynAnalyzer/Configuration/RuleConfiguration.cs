@@ -1,7 +1,7 @@
 using Microsoft.CodeAnalysis;
-using CustomRulesAnalyzer.Rules;
+using CustomRoselynAnalyzer.Core;
 
-namespace CustomRulesAnalyzer.Rules.Configuration;
+namespace CustomRoselynAnalyzer.Configuration;
 
 internal sealed class RuleConfiguration
 {

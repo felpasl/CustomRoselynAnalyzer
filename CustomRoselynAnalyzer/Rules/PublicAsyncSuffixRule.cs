@@ -2,23 +2,39 @@ using System.Linq;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.Diagnostics;
-using CustomRulesAnalyzer.Rules.Configuration;
+using CustomRoselynAnalyzer.Configuration;
+using CustomRoselynAnalyzer.Core;
 
-namespace CustomRulesAnalyzer.Rules;
+namespace CustomRoselynAnalyzer.Rules;
 
 internal sealed class PublicAsyncSuffixRule : IAnalyzerRule
 {
+    private const string DiagnosticId = "CR0002";
+    private const string Title = "Async method names should end with Async";
+    private const string MessageFormat = "Rename '{0}' to end with Async to clarify asynchronous usage";
+    private const string Category = "Naming";
+    private const string Description =
+        "Async methods should end with Async so consumers understand they run asynchronously.";
+
     private static readonly RuleDescriptorInfo Info = new(
-        id: "CR0002",
-        title: "Async method names should end with Async",
-        messageFormat: "Rename '{0}' to end with Async to clarify asynchronous usage",
-        category: "Naming",
+        id: DiagnosticId,
+        title: Title,
+        messageFormat: MessageFormat,
+        category: Category,
         defaultSeverity: DiagnosticSeverity.Warning,
         enabledByDefault: true,
-        description: "Async methods should end with Async so consumers understand they run asynchronously.");
+        description: Description);
 
-    public static DiagnosticDescriptor DefaultDescriptor =>
-        RuleDescriptorFactory.Create(Info, RuleConfiguration.FromDefaults(Info));
+    private static readonly DiagnosticDescriptor DefaultRuleDescriptor = new(
+        id: DiagnosticId,
+        title: Title,
+        messageFormat: MessageFormat,
+        category: Category,
+        defaultSeverity: DiagnosticSeverity.Warning,
+        isEnabledByDefault: true,
+        description: Description);
+
+    public static DiagnosticDescriptor DefaultDescriptor => DefaultRuleDescriptor;
 
     public DiagnosticDescriptor Descriptor { get; }
 

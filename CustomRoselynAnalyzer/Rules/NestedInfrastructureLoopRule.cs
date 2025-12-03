@@ -1,23 +1,41 @@
 using System;
+using System.Collections.Concurrent;
 using System.Diagnostics;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Diagnostics;
-using CustomRulesAnalyzer.Rules.Configuration;
+using CustomRoselynAnalyzer.Configuration;
+using CustomRoselynAnalyzer.Core;
 
-namespace CustomRulesAnalyzer.Rules;
+namespace CustomRoselynAnalyzer.Rules;
 
 internal sealed class NestedInfrastructureLoopRule : IAnalyzerRule
 {
+    private const string DiagnosticId = "CR0003";
+    private const string Title = "Avoid infrastructure calls inside loops";
+    private const string MessageFormat = "Avoid invoking infrastructure-layer types from loop bodies";
+    private const string Category = "Usage";
+    private const string Description =
+        "Infrastructure operations may be costly; keep them outside loop iterations.";
+
     private static readonly RuleDescriptorInfo Info = new(
-        id: "CR0003",
-        title: "Avoid infrastructure calls inside loops",
-        messageFormat: "Avoid invoking infrastructure-layer types from loop bodies",
-        category: "Usage",
+        id: DiagnosticId,
+        title: Title,
+        messageFormat: MessageFormat,
+        category: Category,
         defaultSeverity: DiagnosticSeverity.Warning,
         enabledByDefault: true,
-        description: "Infrastructure operations may be costly; keep them outside loop iterations.");
+        description: Description);
+
+    private static readonly DiagnosticDescriptor DefaultRuleDescriptor = new(
+        id: DiagnosticId,
+        title: Title,
+        messageFormat: MessageFormat,
+        category: Category,
+        defaultSeverity: DiagnosticSeverity.Warning,
+        isEnabledByDefault: true,
+        description: Description);
 
     private static readonly SyntaxKind[] LoopKinds =
     {
@@ -28,12 +46,13 @@ internal sealed class NestedInfrastructureLoopRule : IAnalyzerRule
         SyntaxKind.DoStatement
     };
 
-    public static DiagnosticDescriptor DefaultDescriptor =>
-        RuleDescriptorFactory.Create(Info, RuleConfiguration.FromDefaults(Info));
+    public static DiagnosticDescriptor DefaultDescriptor => DefaultRuleDescriptor;
 
     public DiagnosticDescriptor Descriptor { get; }
 
     private readonly bool _isEnabled;
+    private readonly ConcurrentDictionary<ISymbol, bool> _methodInfrastructureCache =
+        new(SymbolEqualityComparer.Default);
 
     public NestedInfrastructureLoopRule(IRuleConfigurationSource configurationSource)
     {
@@ -54,7 +73,13 @@ internal sealed class NestedInfrastructureLoopRule : IAnalyzerRule
 
     private void AnalyzeLoop(SyntaxNodeAnalysisContext context)
     {
-        if (!TryFindInfrastructureUsage(context.Node, context.SemanticModel, out var offendingNode, out var symbol))
+        var loopBody = GetLoopBody(context.Node);
+        if (loopBody is null)
+        {
+            return;
+        }
+
+        if (!TryFindInfrastructureUsage(loopBody, context.SemanticModel, out var offendingNode, out var symbol))
         {
             return;
         }
@@ -70,20 +95,29 @@ internal sealed class NestedInfrastructureLoopRule : IAnalyzerRule
         context.ReportDiagnostic(Diagnostic.Create(Descriptor, location));
     }
 
-    private static bool TryFindInfrastructureUsage(
-        SyntaxNode loopNode,
+    private bool TryFindInfrastructureUsage(
+        SyntaxNode loopBody,
         SemanticModel semanticModel,
         out SyntaxNode? offendingNode,
         out ISymbol? infrastructureSymbol)
     {
-        foreach (var node in loopNode.DescendantNodesAndSelf())
+        foreach (var node in loopBody.DescendantNodesAndSelf())
         {
             switch (node)
             {
                 case InvocationExpressionSyntax invocation:
-                    if (TryGetInfrastructureSymbol(semanticModel.GetSymbolInfo(invocation), out infrastructureSymbol))
+                    var invocationSymbol = semanticModel.GetSymbolInfo(invocation);
+                    if (TryGetInfrastructureSymbol(invocationSymbol, out infrastructureSymbol))
                     {
                         offendingNode = invocation;
+                        return true;
+                    }
+
+                    var indirectSymbol = FindInfrastructureMethod(invocationSymbol, semanticModel.Compilation);
+                    if (indirectSymbol is not null)
+                    {
+                        offendingNode = invocation;
+                        infrastructureSymbol = indirectSymbol;
                         return true;
                     }
 
@@ -146,7 +180,100 @@ internal sealed class NestedInfrastructureLoopRule : IAnalyzerRule
         return false;
     }
 
-    private const string InfrastructureNamespace = "SampleApp.Infrastructure";
+    private IMethodSymbol? FindInfrastructureMethod(SymbolInfo symbolInfo, Compilation compilation)
+    {
+        if (symbolInfo.Symbol is IMethodSymbol methodSymbol &&
+            CallsMethodWithInfrastructure(methodSymbol, compilation))
+        {
+            return methodSymbol;
+        }
+
+        if (symbolInfo.CandidateReason == CandidateReason.None)
+        {
+            return null;
+        }
+
+        foreach (var candidate in symbolInfo.CandidateSymbols)
+        {
+            if (candidate is IMethodSymbol candidateMethod &&
+                CallsMethodWithInfrastructure(candidateMethod, compilation))
+            {
+                return candidateMethod;
+            }
+        }
+
+        return null;
+    }
+
+    private bool CallsMethodWithInfrastructure(IMethodSymbol methodSymbol, Compilation compilation)
+    {
+        return _methodInfrastructureCache.GetOrAdd(methodSymbol, symbol =>
+        {
+            foreach (var syntaxReference in symbol.DeclaringSyntaxReferences)
+            {
+                var syntax = syntaxReference.GetSyntax();
+                var semanticModel = compilation.GetSemanticModel(syntax.SyntaxTree);
+                var body = ExtractBodyNode(syntax);
+                if (body is null)
+                {
+                    continue;
+                }
+
+                if (ContainsInfrastructureUsage(body, semanticModel))
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        });
+    }
+
+    private static SyntaxNode? ExtractBodyNode(SyntaxNode syntax) => syntax switch
+    {
+        BaseMethodDeclarationSyntax methodSyntax =>
+            (SyntaxNode?)methodSyntax.Body ?? methodSyntax.ExpressionBody?.Expression,
+        AccessorDeclarationSyntax accessorSyntax =>
+            (SyntaxNode?)accessorSyntax.Body ?? accessorSyntax.ExpressionBody?.Expression,
+        LocalFunctionStatementSyntax localFunction =>
+            (SyntaxNode?)localFunction.Body ?? localFunction.ExpressionBody?.Expression,
+        _ => null
+    };
+
+    private static StatementSyntax? GetLoopBody(SyntaxNode loop) => loop switch
+    {
+        ForStatementSyntax forStatement => forStatement.Statement,
+        ForEachStatementSyntax foreachStatement => foreachStatement.Statement,
+        ForEachVariableStatementSyntax foreachVar => foreachVar.Statement,
+        WhileStatementSyntax whileStatement => whileStatement.Statement,
+        DoStatementSyntax doStatement => doStatement.Statement,
+        _ => null
+    };
+
+    private static bool ContainsInfrastructureUsage(SyntaxNode node, SemanticModel semanticModel)
+    {
+        foreach (var descendant in node.DescendantNodesAndSelf())
+        {
+            if (descendant is ExpressionSyntax expression)
+            {
+                var typeInfo = semanticModel.GetTypeInfo(expression);
+                if (IsInfrastructureSymbol(typeInfo.Type) || IsInfrastructureSymbol(typeInfo.ConvertedType))
+                {
+                    return true;
+                }
+            }
+
+            var symbol = semanticModel.GetSymbolInfo(descendant).Symbol;
+            if (IsInfrastructureSymbol(symbol))
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private const string InfrastructureNamespaceToken = "Infrastructure";
 
     private static bool IsInfrastructureSymbol(ISymbol? symbol)
     {
@@ -196,6 +323,6 @@ internal sealed class NestedInfrastructureLoopRule : IAnalyzerRule
             return false;
         }
 
-        return ns.StartsWith(InfrastructureNamespace, StringComparison.Ordinal);
+        return ns.IndexOf(InfrastructureNamespaceToken, StringComparison.OrdinalIgnoreCase) >= 0;
     }
 }

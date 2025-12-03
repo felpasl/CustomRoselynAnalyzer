@@ -3,23 +3,39 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Diagnostics;
-using CustomRulesAnalyzer.Rules.Configuration;
+using CustomRoselynAnalyzer.Configuration;
+using CustomRoselynAnalyzer.Core;
 
-namespace CustomRulesAnalyzer.Rules;
+namespace CustomRoselynAnalyzer.Rules;
 
 internal sealed class AvoidConsoleWriteLineRule : IAnalyzerRule
 {
-    private static readonly RuleDescriptorInfo Info = new(
-        id: "CR0001",
-        title: "Avoid Console.WriteLine",
-        messageFormat: "Use a logging abstraction instead of Console.WriteLine",
-        category: "Usage",
-        defaultSeverity: DiagnosticSeverity.Error,
-        enabledByDefault: true,
-        description: "Console.WriteLine makes automated testing harder. Use ILogger or another abstraction instead.");
+    private const string DiagnosticId = "CR0001";
+    private const string Title = "Avoid Console.WriteLine";
+    private const string MessageFormat = "Use a logging abstraction instead of Console.WriteLine";
+    private const string Category = "Usage";
+    private const string Description =
+        "Console.WriteLine makes automated testing harder. Use ILogger or another abstraction instead.";
 
-    public static DiagnosticDescriptor DefaultDescriptor =>
-        RuleDescriptorFactory.Create(Info, RuleConfiguration.FromDefaults(Info));
+    private static readonly RuleDescriptorInfo Info = new(
+        id: DiagnosticId,
+        title: Title,
+        messageFormat: MessageFormat,
+        category: Category,
+        defaultSeverity: DiagnosticSeverity.Warning,
+        enabledByDefault: true,
+        description: Description);
+
+    private static readonly DiagnosticDescriptor DefaultRuleDescriptor = new(
+        id: DiagnosticId,
+        title: Title,
+        messageFormat: MessageFormat,
+        category: Category,
+        defaultSeverity: DiagnosticSeverity.Warning,
+        isEnabledByDefault: true,
+        description: Description);
+
+    public static DiagnosticDescriptor DefaultDescriptor => DefaultRuleDescriptor;
 
     public DiagnosticDescriptor Descriptor { get; }
 

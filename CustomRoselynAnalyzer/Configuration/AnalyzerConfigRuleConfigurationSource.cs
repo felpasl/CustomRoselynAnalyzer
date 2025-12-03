@@ -1,8 +1,9 @@
 using System;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Diagnostics;
+using CustomRoselynAnalyzer.Core;
 
-namespace CustomRulesAnalyzer.Rules.Configuration;
+namespace CustomRoselynAnalyzer.Configuration;
 
 internal sealed class AnalyzerConfigRuleConfigurationSource : IRuleConfigurationSource
 {

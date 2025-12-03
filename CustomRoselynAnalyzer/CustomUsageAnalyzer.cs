@@ -1,10 +1,11 @@
 using System.Collections.Immutable;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Diagnostics;
-using CustomRulesAnalyzer.Rules;
-using CustomRulesAnalyzer.Rules.Configuration;
+using CustomRoselynAnalyzer.Core;
+using CustomRoselynAnalyzer.Rules;
+using CustomRoselynAnalyzer.Configuration;
 
-namespace CustomRulesAnalyzer;
+namespace CustomRoselynAnalyzer;
 
 /// <summary>
 /// Custom analyzer that demonstrates two rules:

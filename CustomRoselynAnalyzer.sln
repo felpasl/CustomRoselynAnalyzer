@@ -3,9 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CustomRulesAnalyzer", "CustomRulesAnalyzer\CustomRulesAnalyzer.csproj", "{7961AD18-F8D0-4A55-BA6F-8383539AADF9}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CustomRoselynAnalyzer", "CustomRoselynAnalyzer\CustomRoselynAnalyzer.csproj", "{7961AD18-F8D0-4A55-BA6F-8383539AADF9}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SampleApp", "SampleApp\SampleApp.csproj", "{B81430AA-9349-48E7-ABAE-6779F4072D8C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CustomRoselynAnalyzer.Tests", "CustomRoselynAnalyzer.Tests\CustomRoselynAnalyzer.Tests.csproj", "{9E6FAEDF-DF6E-4FEC-960E-677A95EABFDD}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -41,6 +43,18 @@ Global
 		{B81430AA-9349-48E7-ABAE-6779F4072D8C}.Release|x64.Build.0 = Release|Any CPU
 		{B81430AA-9349-48E7-ABAE-6779F4072D8C}.Release|x86.ActiveCfg = Release|Any CPU
 		{B81430AA-9349-48E7-ABAE-6779F4072D8C}.Release|x86.Build.0 = Release|Any CPU
+		{9E6FAEDF-DF6E-4FEC-960E-677A95EABFDD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9E6FAEDF-DF6E-4FEC-960E-677A95EABFDD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9E6FAEDF-DF6E-4FEC-960E-677A95EABFDD}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{9E6FAEDF-DF6E-4FEC-960E-677A95EABFDD}.Debug|x64.Build.0 = Debug|Any CPU
+		{9E6FAEDF-DF6E-4FEC-960E-677A95EABFDD}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{9E6FAEDF-DF6E-4FEC-960E-677A95EABFDD}.Debug|x86.Build.0 = Debug|Any CPU
+		{9E6FAEDF-DF6E-4FEC-960E-677A95EABFDD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9E6FAEDF-DF6E-4FEC-960E-677A95EABFDD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9E6FAEDF-DF6E-4FEC-960E-677A95EABFDD}.Release|x64.ActiveCfg = Release|Any CPU
+		{9E6FAEDF-DF6E-4FEC-960E-677A95EABFDD}.Release|x64.Build.0 = Release|Any CPU
+		{9E6FAEDF-DF6E-4FEC-960E-677A95EABFDD}.Release|x86.ActiveCfg = Release|Any CPU
+		{9E6FAEDF-DF6E-4FEC-960E-677A95EABFDD}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

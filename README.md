@@ -4,10 +4,10 @@ This repository hosts a Roslyn analyzer package plus a small console application
 
 ### Projects
 
-- `CustomRulesAnalyzer` – Analyzer library that targets `netstandard2.0` and can be packed/published as a standalone analyzer package.
+- `CustomRoselynAnalyzer` – Analyzer library that targets `netstandard2.0` and can be packed/published as a standalone analyzer package.
 - `SampleApp` – .NET 9 console app wired up to the analyzer via a project reference (`OutputItemType="Analyzer"`), giving fast feedback while developing rules.
 
-Both projects are included in `RoselynCustomAnalyzer.sln`.
+Both projects are included in `CustomRoselynAnalyzer.sln`.
 
 ### Implemented rules
 
@@ -15,7 +15,7 @@ Both projects are included in `RoselynCustomAnalyzer.sln`.
 |--------|----------|-------------|
 | `CR0001` | Usage | Flags any call to `Console.WriteLine` to encourage the use of a logging abstraction. |
 | `CR0002` | Naming | Requires public async methods to end with `Async` so their behavior is clear to callers. |
-| `CR0003` | Usage | Warns when loop bodies invoke infrastructure-layer services to avoid repeated expensive calls. |
+| `CR0003` | Usage | Warns when loop bodies invoke services under namespaces containing `Infrastructure` to avoid repeated expensive calls. |
 
 `SampleApp/Program.cs` intentionally violates both rules so you can see the diagnostics when running a build in the sample, Visual Studio, or VS Code.
 
@@ -33,12 +33,12 @@ Both projects are included in `RoselynCustomAnalyzer.sln`.
 3. Analyze `SampleApp` from the command line. The analyzer runs automatically during build, so invoking `dotnet build SampleApp` or the more thorough `dotnet build` from the repo root will surface diagnostics. You should see warnings `CR0001`/`CR0002` in the output—treat them as you would compiler warnings (they can fail CI if you turn `warningsAsErrors` on).
 4. Reference the analyzer from another project by copying the `<ProjectReference ... OutputItemType="Analyzer" />` snippet from `SampleApp.csproj`, or pack it as a NuGet package:
    ```bash
-   dotnet pack CustomRulesAnalyzer -c Release
+   dotnet pack CustomRoselynAnalyzer -c Release
    ```
-   This command creates `CustomRulesAnalyzer/bin/Release/CustomRulesAnalyzer.1.0.0.nupkg`, which is just a zipped NuGet package. You can distribute that file directly or inspect it with any zip tool.
+   This command creates `CustomRoselynAnalyzer/bin/Release/CustomRoselynAnalyzer.1.0.0.nupkg`, which is just a zipped NuGet package. You can distribute that file directly or inspect it with any zip tool.
 
 ### Next steps
 
-- Add more `DiagnosticAnalyzer` implementations in `CustomRulesAnalyzer`.
+- Add more `DiagnosticAnalyzer` implementations in `CustomRoselynAnalyzer`.
 - Expand `AnalyzerReleases.Unshipped.md` / `.Shipped.md` as rules evolve so versioned release notes stay accurate.
 - Add unit tests using `Microsoft.CodeAnalysis.CSharp.Analyzer.Testing.XUnit` if you need automated verification.
