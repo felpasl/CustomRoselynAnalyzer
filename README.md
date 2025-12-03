@@ -15,6 +15,7 @@ Both projects are included in `RoselynCustomAnalyzer.sln`.
 |--------|----------|-------------|
 | `CR0001` | Usage | Flags any call to `Console.WriteLine` to encourage the use of a logging abstraction. |
 | `CR0002` | Naming | Requires public async methods to end with `Async` so their behavior is clear to callers. |
+| `CR0003` | Usage | Warns when loop bodies invoke infrastructure-layer services to avoid repeated expensive calls. |
 
 `SampleApp/Program.cs` intentionally violates both rules so you can see the diagnostics when running a build in the sample, Visual Studio, or VS Code.
 
