@@ -3,7 +3,7 @@ using CustomRoslynAnalyzer.Core;
 
 namespace CustomRoslynAnalyzer.Configuration;
 
-internal sealed class RuleConfiguration
+public sealed class RuleConfiguration
 {
     public RuleConfiguration(bool isEnabled, DiagnosticSeverity severity)
     {

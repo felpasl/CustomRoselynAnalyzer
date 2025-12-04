@@ -10,7 +10,7 @@ using CustomRoslynAnalyzer.Core;
 
 namespace CustomRoslynAnalyzer.Rules;
 
-internal sealed class NestedInfrastructureLoopRule : IAnalyzerRule
+public sealed class NestedInfrastructureLoopRule : IAnalyzerRule
 {
     private const string DiagnosticId = "CR0003";
     private const string Title = "Avoid infrastructure calls inside loops";
@@ -68,31 +68,98 @@ internal sealed class NestedInfrastructureLoopRule : IAnalyzerRule
             return;
         }
 
-        context.RegisterSyntaxNodeAction(AnalyzeLoop, LoopKinds);
+        context.RegisterSyntaxNodeAction(AnalyzeInvocation, SyntaxKind.InvocationExpression);
+        context.RegisterSyntaxNodeAction(AnalyzeCreation, SyntaxKind.ObjectCreationExpression);
+        context.RegisterSyntaxNodeAction(AnalyzeImplicitCreation, SyntaxKind.ImplicitObjectCreationExpression);
     }
 
-    private void AnalyzeLoop(SyntaxNodeAnalysisContext context)
+    private void AnalyzeInvocation(SyntaxNodeAnalysisContext context)
     {
-        var loopBody = GetLoopBody(context.Node);
-        if (loopBody is null)
+        var invocation = (InvocationExpressionSyntax)context.Node;
+        if (!IsInsideLoop(invocation))
         {
             return;
         }
 
-        if (!TryFindInfrastructureUsage(loopBody, context.SemanticModel, out var offendingNode, out var symbol))
+        if (!TryGetInfrastructureSymbol(context.SemanticModel.GetSymbolInfo(invocation), out var infrastructureSymbol))
+        {
+            infrastructureSymbol = FindInfrastructureMethod(context.SemanticModel.GetSymbolInfo(invocation), context.SemanticModel.Compilation);
+            if (infrastructureSymbol is null)
+            {
+                return;
+            }
+        }
+
+#if DEBUG
+        var symbolDescription = infrastructureSymbol.ToDisplayString(SymbolDisplayFormat.MinimallyQualifiedFormat);
+        Debug.WriteLine($"[CR0003] Invocation '{invocation}' of infrastructure '{symbolDescription}' is inside a loop.");
+#endif
+
+        var location = invocation.GetLocation();
+        if (invocation.Expression is MemberAccessExpressionSyntax memberAccess)
+        {
+            location = memberAccess.Name.GetLocation();
+        }
+
+        context.ReportDiagnostic(Diagnostic.Create(Descriptor, location));
+    }
+
+    private void AnalyzeCreation(SyntaxNodeAnalysisContext context)
+    {
+        var creation = (ObjectCreationExpressionSyntax)context.Node;
+        if (!IsInsideLoop(creation))
+        {
+            return;
+        }
+
+        var creationType = context.SemanticModel.GetSymbolInfo(creation.Type).Symbol as ITypeSymbol
+                            ?? context.SemanticModel.GetTypeInfo(creation).Type;
+        if (!IsInfrastructureSymbol(creationType))
         {
             return;
         }
 
 #if DEBUG
-        var symbolDescription = symbol?.ToDisplayString(SymbolDisplayFormat.MinimallyQualifiedFormat)
-            ?? offendingNode?.ToString()
-            ?? "<unknown>";
-        Debug.WriteLine($"[CR0003] Loop '{context.Node.Kind()}' contains infrastructure usage '{symbolDescription}'.");
+        var symbolDescription = creationType.ToDisplayString(SymbolDisplayFormat.MinimallyQualifiedFormat);
+        Debug.WriteLine($"[CR0003] Creation '{creation}' of infrastructure '{symbolDescription}' is inside a loop.");
 #endif
 
-        var location = offendingNode?.GetLocation() ?? context.Node.GetLocation();
-        context.ReportDiagnostic(Diagnostic.Create(Descriptor, location));
+        context.ReportDiagnostic(Diagnostic.Create(Descriptor, creation.GetLocation()));
+    }
+
+    private void AnalyzeImplicitCreation(SyntaxNodeAnalysisContext context)
+    {
+        var implicitCreation = (ImplicitObjectCreationExpressionSyntax)context.Node;
+        if (!IsInsideLoop(implicitCreation))
+        {
+            return;
+        }
+
+        var implicitType = context.SemanticModel.GetTypeInfo(implicitCreation).Type;
+        if (!IsInfrastructureSymbol(implicitType))
+        {
+            return;
+        }
+
+#if DEBUG
+        var symbolDescription = implicitType.ToDisplayString(SymbolDisplayFormat.MinimallyQualifiedFormat);
+        Debug.WriteLine($"[CR0003] Implicit creation '{implicitCreation}' of infrastructure '{symbolDescription}' is inside a loop.");
+#endif
+
+        context.ReportDiagnostic(Diagnostic.Create(Descriptor, implicitCreation.GetLocation()));
+    }
+
+    private static bool IsInsideLoop(SyntaxNode node)
+    {
+        for (var current = node.Parent; current is not null; current = current.Parent)
+        {
+            if (LoopKinds.Contains(current.Kind()))
+            {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     private bool TryFindInfrastructureUsage(

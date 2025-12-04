@@ -1,6 +1,7 @@
 bin/
 obj/
-
+coverage-report
+artifacts
 *.user
 *.vs
 *.suo

@@ -4,7 +4,6 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Testing;
 using Microsoft.CodeAnalysis.Diagnostics;
 using Microsoft.CodeAnalysis.Testing;
-using Microsoft.CodeAnalysis.Testing.Verifiers;
 
 namespace CustomRoslynAnalyzer.Tests.Helpers;
 
@@ -28,7 +27,7 @@ internal static class CSharpAnalyzerVerifier<TAnalyzer>
         return test.RunAsync(CancellationToken.None);
     }
 
-    private sealed class Test : CSharpAnalyzerTest<TAnalyzer, XUnitVerifier>
+    private sealed class Test : CSharpAnalyzerTest<TAnalyzer, DefaultVerifier>
     {
         public Test()
         {

@@ -8,7 +8,7 @@ using CustomRoslynAnalyzer.Core;
 
 namespace CustomRoslynAnalyzer.Rules;
 
-internal sealed class AvoidConsoleWriteLineRule : IAnalyzerRule
+public sealed class AvoidConsoleWriteLineRule : IAnalyzerRule
 {
     private const string DiagnosticId = "CR0001";
     private const string Title = "Avoid Console.WriteLine";

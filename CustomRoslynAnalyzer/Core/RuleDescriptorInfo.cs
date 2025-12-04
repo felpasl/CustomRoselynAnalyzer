@@ -2,7 +2,7 @@ using Microsoft.CodeAnalysis;
 
 namespace CustomRoslynAnalyzer.Core;
 
-internal sealed class RuleDescriptorInfo
+public sealed class RuleDescriptorInfo
 {
     public RuleDescriptorInfo(
         string id,

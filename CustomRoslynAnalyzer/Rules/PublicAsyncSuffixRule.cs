@@ -7,7 +7,7 @@ using CustomRoslynAnalyzer.Core;
 
 namespace CustomRoslynAnalyzer.Rules;
 
-internal sealed class PublicAsyncSuffixRule : IAnalyzerRule
+public sealed class PublicAsyncSuffixRule : IAnalyzerRule
 {
     private const string DiagnosticId = "CR0002";
     private const string Title = "Async method names should end with Async";
