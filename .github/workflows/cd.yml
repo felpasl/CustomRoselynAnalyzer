@@ -31,7 +31,7 @@ jobs:
           dotnet-version: '9.0.x'
 
       - name: Restore
-        run: dotnet restore CustomRoselynAnalyzer/CustomRoselynAnalyzer.csproj
+        run: dotnet restore CustomRoslynAnalyzer/CustomRoslynAnalyzer.csproj
 
       - name: Determine package version
         id: determine-version
@@ -58,7 +58,7 @@ jobs:
         shell: bash
         run: |
           VERSION="${{ steps.determine-version.outputs.version }}"
-          dotnet pack CustomRoselynAnalyzer/CustomRoselynAnalyzer.csproj \
+          dotnet pack CustomRoslynAnalyzer/CustomRoslynAnalyzer.csproj \
             --configuration Release \
             -p:PackageVersion="$VERSION" \
             --output artifacts/nuget
@@ -137,8 +137,8 @@ jobs:
         run: |
           $version = '${{ needs.pack.outputs.package_version }}'
           $sdkPath = Join-Path $env:SDK_DIR 'RoslynSonarQubePluginGenerator.exe'
-          & $sdkPath /analyzer:"CustomRoselynAnalyzer:$version" /customnugetrepo:"C:\LocalNuGetFeed" /recurse
-          $pluginJar = Get-ChildItem -Path $env:GITHUB_WORKSPACE -Filter 'CustomRoselynAnalyzer-plugin*.jar' -Recurse -File | Select-Object -First 1
+          & $sdkPath /analyzer:"CustomRoslynAnalyzer:$version" /customnugetrepo:"C:\LocalNuGetFeed" /recurse
+          $pluginJar = Get-ChildItem -Path $env:GITHUB_WORKSPACE -Filter 'CustomRoslynAnalyzer-plugin*.jar' -Recurse -File | Select-Object -First 1
           if (-not $pluginJar) {
             Write-Error 'SonarQube plugin jar not found'
             exit 1
@@ -149,7 +149,7 @@ jobs:
           }
           $pluginDir = Join-Path $env:GITHUB_WORKSPACE 'artifacts/sonarqube'
           New-Item -ItemType Directory -Path $pluginDir -Force | Out-Null
-          $pluginReleaseName = "CustomRoselynAnalyzer-plugin.$releaseTag.jar"
+          $pluginReleaseName = "CustomRoslynAnalyzer-plugin.$releaseTag.jar"
           $pluginDest = Join-Path $pluginDir $pluginReleaseName
           Copy-Item -Path $pluginJar.FullName -Destination $pluginDest -Force
           echo "plugin_path=$pluginDest" >> $env:GITHUB_OUTPUT

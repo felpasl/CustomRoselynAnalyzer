@@ -3,12 +3,12 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Diagnostics;
-using CustomRoselynAnalyzer.Configuration;
-using CustomRoselynAnalyzer.Core;
+using CustomRoslynAnalyzer.Configuration;
+using CustomRoslynAnalyzer.Core;
 
-namespace CustomRoselynAnalyzer.Rules;
+namespace CustomRoslynAnalyzer.Rules;
 
-internal sealed class AvoidConsoleWriteLineRule : IAnalyzerRule
+public sealed class AvoidConsoleWriteLineRule : IAnalyzerRule
 {
     private const string DiagnosticId = "CR0001";
     private const string Title = "Avoid Console.WriteLine";

@@ -9,7 +9,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..&#x2F;CustomRoselynAnalyzer&#x2F;CustomRoselynAnalyzer.csproj"
+    <ProjectReference Include="..&#x2F;CustomRoslynAnalyzer&#x2F;CustomRoslynAnalyzer.csproj"
                       OutputItemType="Analyzer"
                       ReferenceOutputAssembly="false" />
   </ItemGroup>

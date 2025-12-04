@@ -1,7 +1,7 @@
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Diagnostics;
 
-namespace CustomRoselynAnalyzer.Configuration;
+namespace CustomRoslynAnalyzer.Configuration;
 
 internal static class RuleConfigurationSourceFactory
 {

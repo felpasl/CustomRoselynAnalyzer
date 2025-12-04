@@ -1,9 +1,9 @@
 using Microsoft.CodeAnalysis;
-using CustomRoselynAnalyzer.Core;
+using CustomRoslynAnalyzer.Core;
 
-namespace CustomRoselynAnalyzer.Configuration;
+namespace CustomRoslynAnalyzer.Configuration;
 
-internal sealed class RuleConfiguration
+public sealed class RuleConfiguration
 {
     public RuleConfiguration(bool isEnabled, DiagnosticSeverity severity)
     {

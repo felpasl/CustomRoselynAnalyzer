@@ -1,7 +1,7 @@
 using Microsoft.CodeAnalysis;
-using CustomRoselynAnalyzer.Core;
+using CustomRoslynAnalyzer.Core;
 
-namespace CustomRoselynAnalyzer.Configuration;
+namespace CustomRoslynAnalyzer.Configuration;
 
 internal static class RuleDescriptorFactory
 {
