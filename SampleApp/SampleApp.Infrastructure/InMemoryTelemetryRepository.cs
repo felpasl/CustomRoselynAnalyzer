@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 
 namespace SampleApp.Infrastructure;
 
-internal sealed class InMemoryTelemetryRepository : ITelemetryRepository
+public sealed class InMemoryTelemetryRepository : ITelemetryRepository
 {
     private readonly List<TelemetrySnapshot> _snapshots = new();
     private readonly object _sync = new();

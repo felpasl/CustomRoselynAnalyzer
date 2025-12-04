@@ -8,6 +8,9 @@ using CustomRoslynAnalyzer.Core;
 
 namespace CustomRoslynAnalyzer.Rules;
 
+/// <summary>
+/// Analyzer rule that discourages direct usage of <see cref="System.Console.WriteLine(string)"/> in favor of logging abstractions.
+/// </summary>
 public sealed class AvoidConsoleWriteLineRule : IAnalyzerRule
 {
     private const string DiagnosticId = "CR0001";
@@ -35,12 +38,21 @@ public sealed class AvoidConsoleWriteLineRule : IAnalyzerRule
         isEnabledByDefault: true,
         description: Description);
 
+    /// <summary>
+    /// Gets the default descriptor used when no configuration overrides are provided.
+    /// </summary>
     public static DiagnosticDescriptor DefaultDescriptor => DefaultRuleDescriptor;
 
+    /// <summary>
+    /// Gets the descriptor instance configured for the consuming compilation.
+    /// </summary>
     public DiagnosticDescriptor Descriptor { get; }
 
     private readonly bool _isEnabled;
 
+    /// <summary>
+    /// Initializes the rule using the provided configuration source.
+    /// </summary>
     public AvoidConsoleWriteLineRule(IRuleConfigurationSource configurationSource)
     {
         var configuration = configurationSource.GetConfiguration(Info);
@@ -48,6 +60,9 @@ public sealed class AvoidConsoleWriteLineRule : IAnalyzerRule
         _isEnabled = configuration.IsEnabled;
     }
 
+    /// <summary>
+    /// Registers analyzer callbacks for invocation expressions.
+    /// </summary>
     public void Register(CompilationStartAnalysisContext context)
     {
         if (!_isEnabled)

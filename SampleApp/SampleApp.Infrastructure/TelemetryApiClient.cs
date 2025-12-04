@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace SampleApp.Infrastructure;
 
-internal sealed class TelemetryApiClient : ITelemetryApiClient
+public sealed class TelemetryApiClient : ITelemetryApiClient
 {
     private static readonly Uri DefaultEndpoint = new("https://example.com/api/telemetry");
 

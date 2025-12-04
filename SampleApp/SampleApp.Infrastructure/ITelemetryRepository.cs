@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 
 namespace SampleApp.Infrastructure;
 
-internal interface ITelemetryRepository
+public interface ITelemetryRepository
 {
     Task SaveAsync(TelemetrySnapshot snapshot, CancellationToken cancellationToken = default);
     IReadOnlyCollection<TelemetrySnapshot> GetAll();

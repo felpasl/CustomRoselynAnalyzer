@@ -7,6 +7,9 @@ using CustomRoslynAnalyzer.Core;
 
 namespace CustomRoslynAnalyzer.Rules;
 
+/// <summary>
+/// Analyzer rule that enforces the 'Async' suffix on public asynchronous method names.
+/// </summary>
 public sealed class PublicAsyncSuffixRule : IAnalyzerRule
 {
     private const string DiagnosticId = "CR0002";
@@ -34,12 +37,21 @@ public sealed class PublicAsyncSuffixRule : IAnalyzerRule
         isEnabledByDefault: true,
         description: Description);
 
+    /// <summary>
+    /// Gets the descriptor used when the rule uses default configuration.
+    /// </summary>
     public static DiagnosticDescriptor DefaultDescriptor => DefaultRuleDescriptor;
 
+    /// <summary>
+    /// Gets the descriptor instance configured for the active compilation.
+    /// </summary>
     public DiagnosticDescriptor Descriptor { get; }
 
     private readonly bool _isEnabled;
 
+    /// <summary>
+    /// Initializes the rule using values provided by the configuration source.
+    /// </summary>
     public PublicAsyncSuffixRule(IRuleConfigurationSource configurationSource)
     {
         var configuration = configurationSource.GetConfiguration(Info);
@@ -47,6 +59,9 @@ public sealed class PublicAsyncSuffixRule : IAnalyzerRule
         _isEnabled = configuration.IsEnabled;
     }
 
+    /// <summary>
+    /// Registers analysis callbacks for method symbols.
+    /// </summary>
     public void Register(CompilationStartAnalysisContext context)
     {
         if (!_isEnabled)

@@ -10,6 +10,9 @@ using CustomRoslynAnalyzer.Core;
 
 namespace CustomRoslynAnalyzer.Rules;
 
+/// <summary>
+/// Analyzer rule that warns when infrastructure-layer services are called from within loop bodies.
+/// </summary>
 public sealed class NestedInfrastructureLoopRule : IAnalyzerRule
 {
     private const string DiagnosticId = "CR0003";
@@ -46,8 +49,14 @@ public sealed class NestedInfrastructureLoopRule : IAnalyzerRule
         SyntaxKind.DoStatement
     };
 
+    /// <summary>
+    /// Gets the default descriptor used by the rule absent any configuration overrides.
+    /// </summary>
     public static DiagnosticDescriptor DefaultDescriptor => DefaultRuleDescriptor;
 
+    /// <summary>
+    /// Gets the descriptor instance configured for the current compilation.
+    /// </summary>
     public DiagnosticDescriptor Descriptor { get; }
 
     private readonly bool _isEnabled;
@@ -56,6 +65,9 @@ public sealed class NestedInfrastructureLoopRule : IAnalyzerRule
 
     private readonly RuleConfiguration _configuration;
 
+    /// <summary>
+    /// Initializes the rule using configuration data from the specified source.
+    /// </summary>
     public NestedInfrastructureLoopRule(IRuleConfigurationSource configurationSource)
     {
         _configuration = configurationSource.GetConfiguration(Info);
@@ -63,6 +75,9 @@ public sealed class NestedInfrastructureLoopRule : IAnalyzerRule
         _isEnabled = _configuration.IsEnabled;
     }
 
+    /// <summary>
+    /// Registers syntax node actions that inspect loop bodies for infrastructure usage.
+    /// </summary>
     public void Register(CompilationStartAnalysisContext context)
     {
         if (!_isEnabled || _configuration.Severity == DiagnosticSeverity.Hidden)
@@ -78,7 +93,7 @@ public sealed class NestedInfrastructureLoopRule : IAnalyzerRule
     private void AnalyzeInvocation(SyntaxNodeAnalysisContext context)
     {
         var invocation = (InvocationExpressionSyntax)context.Node;
-        if (!IsInsideLoop(invocation))
+        if (!IsInsideLoopBody(invocation))
         {
             return;
         }
@@ -90,6 +105,11 @@ public sealed class NestedInfrastructureLoopRule : IAnalyzerRule
             {
                 return;
             }
+        }
+
+        if (infrastructureSymbol is null)
+        {
+            return;
         }
 
 #if DEBUG
@@ -109,14 +129,14 @@ public sealed class NestedInfrastructureLoopRule : IAnalyzerRule
     private void AnalyzeCreation(SyntaxNodeAnalysisContext context)
     {
         var creation = (ObjectCreationExpressionSyntax)context.Node;
-        if (!IsInsideLoop(creation))
+        if (!IsInsideLoopBody(creation))
         {
             return;
         }
 
         var creationType = context.SemanticModel.GetSymbolInfo(creation.Type).Symbol as ITypeSymbol
                             ?? context.SemanticModel.GetTypeInfo(creation).Type;
-        if (!IsInfrastructureSymbol(creationType))
+        if (creationType is null || !IsInfrastructureSymbol(creationType))
         {
             return;
         }
@@ -132,13 +152,13 @@ public sealed class NestedInfrastructureLoopRule : IAnalyzerRule
     private void AnalyzeImplicitCreation(SyntaxNodeAnalysisContext context)
     {
         var implicitCreation = (ImplicitObjectCreationExpressionSyntax)context.Node;
-        if (!IsInsideLoop(implicitCreation))
+        if (!IsInsideLoopBody(implicitCreation))
         {
             return;
         }
 
         var implicitType = context.SemanticModel.GetTypeInfo(implicitCreation).Type;
-        if (!IsInfrastructureSymbol(implicitType))
+        if (implicitType is null || !IsInfrastructureSymbol(implicitType))
         {
             return;
         }
@@ -151,11 +171,22 @@ public sealed class NestedInfrastructureLoopRule : IAnalyzerRule
         context.ReportDiagnostic(Diagnostic.Create(Descriptor, implicitCreation.GetLocation()));
     }
 
-    private static bool IsInsideLoop(SyntaxNode node)
+    private static bool IsInsideLoopBody(SyntaxNode node)
     {
-        for (var current = node.Parent; current is not null; current = current.Parent)
+        foreach (var ancestor in node.Ancestors())
         {
-            if (LoopKinds.Contains(current.Kind()))
+            if (!LoopKinds.Contains(ancestor.Kind()))
+            {
+                continue;
+            }
+
+            var loopBody = GetLoopBody(ancestor);
+            if (loopBody is null)
+            {
+                continue;
+            }
+
+            if (loopBody == node || loopBody.FullSpan.Contains(node.FullSpan))
             {
                 return true;
             }
