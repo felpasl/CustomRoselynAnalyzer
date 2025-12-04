@@ -8,9 +8,10 @@
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <LangVersion>latest</LangVersion>
     <EnforceExtendedAnalyzerRules>true</EnforceExtendedAnalyzerRules>
-    <Version>0.0.3</Version>
+    <Version>0.0.4</Version>
     <NuspecFile>CustomRoslynAnalyzer.nuspec</NuspecFile>
-    <PackageType>Analyzer</PackageType>
+    <PackageType>Analyzer</PackageType>    
+    <PackageReadmeFile>README.md</PackageReadmeFile>
   </PropertyGroup>
 
   <ItemGroup>
@@ -24,7 +25,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Content Include="..\README.md" Pack="true" PackagePath="docs/README.md" />
+    <Content Include="..\README.md" Pack="true" PackagePath="README.md" />
     <Content Include="..\LICENSE" Pack="true" PackagePath="LICENSE" />
     <Content Include="CustomRoslynAnalyzer.nuspec" Pack="true" PackagePath="CustomRoslynAnalyzer.nuspec" />
   </ItemGroup>
