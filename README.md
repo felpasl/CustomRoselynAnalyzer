@@ -1,6 +1,6 @@
 ## Roslyn Custom Analyzer package
 
-`CustomRoselynAnalyzer` is a .NET Standard 2.0 analyzer library that ships as a NuGet package (the workflow already packs/publishes it) and exposes the following diagnostics to consumers:
+`CustomRoslynAnalyzer` is a .NET Standard 2.0 analyzer library that ships as a NuGet package (the workflow already packs/publishes it) and exposes the following diagnostics to consumers:
 
 | ID | Category | Description |
 |----|----------|-------------|

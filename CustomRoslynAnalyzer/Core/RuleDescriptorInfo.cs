@@ -1,6 +1,6 @@
 using Microsoft.CodeAnalysis;
 
-namespace CustomRoselynAnalyzer.Core;
+namespace CustomRoslynAnalyzer.Core;
 
 internal sealed class RuleDescriptorInfo
 {

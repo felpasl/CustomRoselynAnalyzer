@@ -1,8 +1,8 @@
-using CustomRoselynAnalyzer.Rules;
+using CustomRoslynAnalyzer.Rules;
 using Microsoft.CodeAnalysis.Testing;
-using VerifyCS = CustomRoselynAnalyzer.Tests.Helpers.CSharpAnalyzerVerifier<CustomRoselynAnalyzer.CustomUsageAnalyzer>;
+using VerifyCS = CustomRoslynAnalyzer.Tests.Helpers.CSharpAnalyzerVerifier<CustomRoslynAnalyzer.CustomUsageAnalyzer>;
 
-namespace CustomRoselynAnalyzer.Tests;
+namespace CustomRoslynAnalyzer.Tests;
 
 public sealed class NestedInfrastructureLoopRuleTests
 {

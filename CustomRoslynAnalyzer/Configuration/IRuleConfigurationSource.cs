@@ -1,6 +1,6 @@
-using CustomRoselynAnalyzer.Core;
+using CustomRoslynAnalyzer.Core;
 
-namespace CustomRoselynAnalyzer.Configuration;
+namespace CustomRoslynAnalyzer.Configuration;
 
 internal interface IRuleConfigurationSource
 {

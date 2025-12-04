@@ -2,10 +2,10 @@ using System.Linq;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.Diagnostics;
-using CustomRoselynAnalyzer.Configuration;
-using CustomRoselynAnalyzer.Core;
+using CustomRoslynAnalyzer.Configuration;
+using CustomRoslynAnalyzer.Core;
 
-namespace CustomRoselynAnalyzer.Rules;
+namespace CustomRoslynAnalyzer.Rules;
 
 internal sealed class PublicAsyncSuffixRule : IAnalyzerRule
 {

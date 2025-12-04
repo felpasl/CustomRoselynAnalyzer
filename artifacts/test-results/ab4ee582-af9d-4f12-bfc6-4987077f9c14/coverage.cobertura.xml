@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <coverage line-rate="0.6607999999999999" branch-rate="0.335" version="1.9" timestamp="1764799826" lines-covered="228" lines-valid="345" branches-covered="64" branches-valid="191">
   <sources>
-    <source>/workspaces/RoselynCustomAnalyzer/CustomRoselynAnalyzer/</source>
+    <source>/workspaces/RoslynCustomAnalyzer/CustomRoslynAnalyzer/</source>
   </sources>
   <packages>
-    <package name="CustomRoselynAnalyzer" line-rate="0.6607999999999999" branch-rate="0.335" complexity="222">
+    <package name="CustomRoslynAnalyzer" line-rate="0.6607999999999999" branch-rate="0.335" complexity="222">
       <classes>
-        <class name="CustomRoselynAnalyzer.CustomUsageAnalyzer" filename="CustomUsageAnalyzer.cs" line-rate="1" branch-rate="1" complexity="3">
+        <class name="CustomRoslynAnalyzer.CustomUsageAnalyzer" filename="CustomUsageAnalyzer.cs" line-rate="1" branch-rate="1" complexity="3">
           <methods>
             <method name="get_SupportedDiagnostics" signature="()" line-rate="1" branch-rate="1" complexity="1">
               <lines>
@@ -74,7 +74,7 @@
             <line number="47" hits="15" branch="False" />
           </lines>
         </class>
-        <class name="CustomRoselynAnalyzer.Rules.AvoidConsoleWriteLineRule" filename="Rules/AvoidConsoleWriteLineRule.cs" line-rate="0.9189" branch-rate="0.6428" complexity="18">
+        <class name="CustomRoslynAnalyzer.Rules.AvoidConsoleWriteLineRule" filename="Rules/AvoidConsoleWriteLineRule.cs" line-rate="0.9189" branch-rate="0.6428" complexity="18">
           <methods>
             <method name="get_DefaultDescriptor" signature="()" line-rate="1" branch-rate="1" complexity="1">
               <lines>
@@ -127,7 +127,7 @@
                 <line number="80" hits="9" branch="False" />
               </lines>
             </method>
-            <method name=".ctor" signature="(CustomRoselynAnalyzer.Configuration.IRuleConfigurationSource)" line-rate="1" branch-rate="1" complexity="1">
+            <method name=".ctor" signature="(CustomRoslynAnalyzer.Configuration.IRuleConfigurationSource)" line-rate="1" branch-rate="1" complexity="1">
               <lines>
                 <line number="44" hits="9" branch="False" />
                 <line number="46" hits="9" branch="False" />
@@ -216,7 +216,7 @@
             <line number="36" hits="1" branch="False" />
           </lines>
         </class>
-        <class name="CustomRoselynAnalyzer.Rules.NestedInfrastructureLoopRule" filename="Rules/NestedInfrastructureLoopRule.cs" line-rate="0.42229999999999995" branch-rate="0.22030000000000002" complexity="122">
+        <class name="CustomRoslynAnalyzer.Rules.NestedInfrastructureLoopRule" filename="Rules/NestedInfrastructureLoopRule.cs" line-rate="0.42229999999999995" branch-rate="0.22030000000000002" complexity="122">
           <methods>
             <method name="get_DefaultDescriptor" signature="()" line-rate="1" branch-rate="1" complexity="1">
               <lines>
@@ -571,7 +571,7 @@
                 <line number="326" hits="2" branch="False" />
               </lines>
             </method>
-            <method name=".ctor" signature="(CustomRoselynAnalyzer.Configuration.IRuleConfigurationSource)" line-rate="1" branch-rate="1" complexity="1">
+            <method name=".ctor" signature="(CustomRoslynAnalyzer.Configuration.IRuleConfigurationSource)" line-rate="1" branch-rate="1" complexity="1">
               <lines>
                 <line number="54" hits="9" branch="False" />
                 <line number="55" hits="9" branch="False" />
@@ -942,7 +942,7 @@
             <line number="47" hits="1" branch="False" />
           </lines>
         </class>
-        <class name="CustomRoselynAnalyzer.Rules.PublicAsyncSuffixRule" filename="Rules/PublicAsyncSuffixRule.cs" line-rate="0.9229999999999999" branch-rate="0.6" complexity="39">
+        <class name="CustomRoslynAnalyzer.Rules.PublicAsyncSuffixRule" filename="Rules/PublicAsyncSuffixRule.cs" line-rate="0.9229999999999999" branch-rate="0.6" complexity="39">
           <methods>
             <method name="get_DefaultDescriptor" signature="()" line-rate="1" branch-rate="1" complexity="1">
               <lines>
@@ -1030,7 +1030,7 @@
                 </line>
               </lines>
             </method>
-            <method name=".ctor" signature="(CustomRoselynAnalyzer.Configuration.IRuleConfigurationSource)" line-rate="1" branch-rate="1" complexity="1">
+            <method name=".ctor" signature="(CustomRoslynAnalyzer.Configuration.IRuleConfigurationSource)" line-rate="1" branch-rate="1" complexity="1">
               <lines>
                 <line number="43" hits="9" branch="False" />
                 <line number="45" hits="9" branch="False" />
@@ -1150,7 +1150,7 @@
             <line number="35" hits="1" branch="False" />
           </lines>
         </class>
-        <class name="CustomRoselynAnalyzer.Core.RuleDescriptorInfo" filename="Core/RuleDescriptorInfo.cs" line-rate="1" branch-rate="1" complexity="8">
+        <class name="CustomRoslynAnalyzer.Core.RuleDescriptorInfo" filename="Core/RuleDescriptorInfo.cs" line-rate="1" branch-rate="1" complexity="8">
           <methods>
             <method name="get_Id" signature="()" line-rate="1" branch-rate="1" complexity="1">
               <lines>
@@ -1234,9 +1234,9 @@
             <line number="23" hits="3" branch="False" />
           </lines>
         </class>
-        <class name="CustomRoselynAnalyzer.Configuration.AnalyzerConfigRuleConfigurationSource" filename="Configuration/AnalyzerConfigRuleConfigurationSource.cs" line-rate="0.5357" branch-rate="0.25" complexity="22">
+        <class name="CustomRoslynAnalyzer.Configuration.AnalyzerConfigRuleConfigurationSource" filename="Configuration/AnalyzerConfigRuleConfigurationSource.cs" line-rate="0.5357" branch-rate="0.25" complexity="22">
           <methods>
-            <method name="GetConfiguration" signature="(CustomRoselynAnalyzer.Core.RuleDescriptorInfo)" line-rate="0.75" branch-rate="0.5" complexity="4">
+            <method name="GetConfiguration" signature="(CustomRoslynAnalyzer.Core.RuleDescriptorInfo)" line-rate="0.75" branch-rate="0.5" complexity="4">
               <lines>
                 <line number="19" hits="27" branch="False" />
                 <line number="20" hits="27" branch="False" />
@@ -1390,7 +1390,7 @@
             <line number="15" hits="9" branch="False" />
           </lines>
         </class>
-        <class name="CustomRoselynAnalyzer.Configuration.RuleConfiguration" filename="Configuration/RuleConfiguration.cs" line-rate="0.7777" branch-rate="1" complexity="6">
+        <class name="CustomRoslynAnalyzer.Configuration.RuleConfiguration" filename="Configuration/RuleConfiguration.cs" line-rate="0.7777" branch-rate="1" complexity="6">
           <methods>
             <method name="get_IsEnabled" signature="()" line-rate="1" branch-rate="1" complexity="1">
               <lines>
@@ -1412,7 +1412,7 @@
                 <line number="21" hits="0" branch="False" />
               </lines>
             </method>
-            <method name="FromDefaults" signature="(CustomRoselynAnalyzer.Core.RuleDescriptorInfo)" line-rate="1" branch-rate="1" complexity="1">
+            <method name="FromDefaults" signature="(CustomRoslynAnalyzer.Core.RuleDescriptorInfo)" line-rate="1" branch-rate="1" complexity="1">
               <lines>
                 <line number="24" hits="27" branch="False" />
               </lines>
@@ -1438,7 +1438,7 @@
             <line number="12" hits="27" branch="False" />
           </lines>
         </class>
-        <class name="CustomRoselynAnalyzer.Configuration.RuleConfigurationSourceFactory" filename="Configuration/RuleConfigurationSourceFactory.cs" line-rate="0.6666" branch-rate="0.5" complexity="2">
+        <class name="CustomRoslynAnalyzer.Configuration.RuleConfigurationSourceFactory" filename="Configuration/RuleConfigurationSourceFactory.cs" line-rate="0.6666" branch-rate="0.5" complexity="2">
           <methods>
             <method name="Create" signature="(Microsoft.CodeAnalysis.Diagnostics.AnalyzerConfigOptionsProvider)" line-rate="0.6666" branch-rate="0.5" complexity="2">
               <lines>
@@ -1462,9 +1462,9 @@
             <line number="15" hits="9" branch="False" />
           </lines>
         </class>
-        <class name="CustomRoselynAnalyzer.Configuration.RuleDescriptorFactory" filename="Configuration/RuleDescriptorFactory.cs" line-rate="1" branch-rate="1" complexity="1">
+        <class name="CustomRoslynAnalyzer.Configuration.RuleDescriptorFactory" filename="Configuration/RuleDescriptorFactory.cs" line-rate="1" branch-rate="1" complexity="1">
           <methods>
-            <method name="Create" signature="(CustomRoselynAnalyzer.Core.RuleDescriptorInfo,CustomRoselynAnalyzer.Configuration.RuleConfiguration)" line-rate="1" branch-rate="1" complexity="1">
+            <method name="Create" signature="(CustomRoslynAnalyzer.Core.RuleDescriptorInfo,CustomRoslynAnalyzer.Configuration.RuleConfiguration)" line-rate="1" branch-rate="1" complexity="1">
               <lines>
                 <line number="10" hits="27" branch="False" />
                 <line number="11" hits="27" branch="False" />
@@ -1488,9 +1488,9 @@
             <line number="17" hits="27" branch="False" />
           </lines>
         </class>
-        <class name="CustomRoselynAnalyzer.Configuration.StaticRuleConfigurationSource" filename="Configuration/StaticRuleConfigurationSource.cs" line-rate="0" branch-rate="1" complexity="1">
+        <class name="CustomRoslynAnalyzer.Configuration.StaticRuleConfigurationSource" filename="Configuration/StaticRuleConfigurationSource.cs" line-rate="0" branch-rate="1" complexity="1">
           <methods>
-            <method name="GetConfiguration" signature="(CustomRoselynAnalyzer.Core.RuleDescriptorInfo)" line-rate="0" branch-rate="1" complexity="1">
+            <method name="GetConfiguration" signature="(CustomRoslynAnalyzer.Core.RuleDescriptorInfo)" line-rate="0" branch-rate="1" complexity="1">
               <lines>
                 <line number="8" hits="0" branch="False" />
               </lines>

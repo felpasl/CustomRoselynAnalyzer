@@ -1,7 +1,7 @@
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Diagnostics;
 
-namespace CustomRoselynAnalyzer.Core;
+namespace CustomRoslynAnalyzer.Core;
 
 internal interface IAnalyzerRule
 {

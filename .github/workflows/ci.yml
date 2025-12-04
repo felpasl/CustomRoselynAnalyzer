@@ -23,12 +23,12 @@ jobs:
       - name: Install ReportGenerator
         run: dotnet tool install -g dotnet-reportgenerator-globaltool
       - name: Restore
-        run: dotnet restore CustomRoselynAnalyzer.sln
+        run: dotnet restore CustomRoslynAnalyzer.sln
       - name: Build
-        run: dotnet build CustomRoselynAnalyzer.sln --configuration Release --no-restore
+        run: dotnet build CustomRoslynAnalyzer.sln --configuration Release --no-restore
       - name: Test
         run: |
-          dotnet test CustomRoselynAnalyzer.Tests/CustomRoselynAnalyzer.Tests.csproj \
+          dotnet test CustomRoslynAnalyzer.Tests/CustomRoslynAnalyzer.Tests.csproj \
             --configuration Release \
             --collect:"XPlat Code Coverage" \
             --logger "trx;LogFileName=test-results.trx" \
