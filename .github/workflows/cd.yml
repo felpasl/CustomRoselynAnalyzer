@@ -23,10 +23,10 @@ jobs:
       release_upload_url: ${{ steps.release-url.outputs.upload_url }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Setup .NET
-        uses: actions/setup-dotnet@v3
+        uses: actions/setup-dotnet@v5
         with:
           dotnet-version: '9.0.x'
 
@@ -81,7 +81,7 @@ jobs:
             --skip-duplicate
 
       - name: Upload package artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: nuget-package
           path: ${{ steps.pack.outputs.package_path }}
@@ -105,10 +105,10 @@ jobs:
     needs: pack
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Download packaged analyzer
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v6
         with:
           name: nuget-package
           path: artifacts/nuget
@@ -156,7 +156,7 @@ jobs:
           echo "plugin_name=$pluginReleaseName" >> $env:GITHUB_OUTPUT
 
       - name: Upload SonarQube plugin artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: sonarqube-plugin
           path: ${{ steps.generate-plugin.outputs.plugin_path }}
