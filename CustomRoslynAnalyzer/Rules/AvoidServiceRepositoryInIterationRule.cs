@@ -281,19 +281,10 @@ internal sealed class AvoidServiceRepositoryInIterationRule : DiagnosticAnalyzer
             return null;
         }
 
-        foreach (var candidate in symbolInfo.CandidateSymbols)
-        {
-            if (candidate is IMethodSymbol candidateMethod)
-            {
-                var dependency = GetServiceRepositoryDependency(candidateMethod, compilation, methodUsageCache);
-                if (dependency is not null)
-                {
-                    return dependency;
-                }
-            }
-        }
-
-        return null;
+        return symbolInfo.CandidateSymbols
+            .OfType<IMethodSymbol>()
+            .Select(candidate => GetServiceRepositoryDependency(candidate, compilation, methodUsageCache))
+            .FirstOrDefault(dependency => dependency is not null);
     }
 
     private static ISymbol? GetServiceRepositoryDependency(
@@ -303,25 +294,24 @@ internal sealed class AvoidServiceRepositoryInIterationRule : DiagnosticAnalyzer
     {
         return methodUsageCache.GetOrAdd(methodSymbol, symbol =>
         {
-            foreach (var syntaxReference in symbol.DeclaringSyntaxReferences)
-            {
-                var syntax = syntaxReference.GetSyntax();
+            return symbol.DeclaringSyntaxReferences
+                .Select(reference =>
+                {
+                    var syntax = reference.GetSyntax();
 #pragma warning disable RS1030 // Need semantic model to inspect method bodies for dependency traversal.
-                var semanticModel = compilation.GetSemanticModel(syntax.SyntaxTree);
+                    var semanticModel = compilation.GetSemanticModel(syntax.SyntaxTree);
 #pragma warning restore RS1030
-                var body = ExtractBodyNode(syntax);
-                if (body is null)
-                {
-                    continue;
-                }
+                    var body = ExtractBodyNode(syntax);
+                    if (body is null)
+                    {
+                        return null;
+                    }
 
-                if (TryFindServiceRepositoryUsage(body, semanticModel, out var dependency))
-                {
-                    return dependency;
-                }
-            }
-
-            return null;
+                    return TryFindServiceRepositoryUsage(body, semanticModel, out var dependency)
+                        ? dependency
+                        : null;
+                })
+                .FirstOrDefault(dependency => dependency is not null);
         });
     }
 
