@@ -40,7 +40,7 @@ internal sealed class PublicAsyncSuffixRule : DiagnosticAnalyzer
         defaultSeverity: DiagnosticSeverity.Warning,
         isEnabledByDefault: true,
         description: Description,
-        helpLinkUri: "https://github.com/felpasl/CustomRoselynAnalyzer/blob/main/doc/CR0002.md");
+        helpLinkUri: "https://github.com/felpasl/CustomRoslynAnalyzer/blob/main/doc/CR0002.md");
 
     /// <summary>
     /// Gets the descriptor used when the rule uses default configuration.

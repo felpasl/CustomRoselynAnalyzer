@@ -46,7 +46,7 @@ internal sealed class NestedInfrastructureLoopRule : DiagnosticAnalyzer
         defaultSeverity: DiagnosticSeverity.Warning,
         isEnabledByDefault: true,
         description: Description,
-        helpLinkUri: "https://github.com/felpasl/CustomRoselynAnalyzer/blob/main/doc/CR0003.md");
+        helpLinkUri: "https://github.com/felpasl/CustomRoslynAnalyzer/blob/main/doc/CR0003.md");
 
     private static readonly SyntaxKind[] LoopKinds =
     {

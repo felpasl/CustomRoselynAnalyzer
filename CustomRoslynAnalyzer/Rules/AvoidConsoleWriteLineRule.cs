@@ -41,7 +41,7 @@ internal sealed class AvoidConsoleWriteLineRule : DiagnosticAnalyzer
         defaultSeverity: DiagnosticSeverity.Warning,
         isEnabledByDefault: true,
         description: Description,
-        helpLinkUri: "https://github.com/felpasl/CustomRoselynAnalyzer/blob/main/doc/CR0001.md");
+        helpLinkUri: "https://github.com/felpasl/CustomRoslynAnalyzer/blob/main/doc/CR0001.md");
 
     /// <summary>
     /// Gets the default descriptor used when no configuration overrides are provided.
