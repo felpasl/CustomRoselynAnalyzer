@@ -8,9 +8,10 @@
 |----|----------|-------------|
 | `CR0001` | Usage | Flags `Console.WriteLine` calls so you can enforce a logging abstraction instead of writing directly to standard output. |
 | `CR0002` | Naming | Requires public async methods to end with `Async`, making their asynchronous nature explicit. |
-| `CR0003` | Usage | Warns whenever a loop body invokes services deeper in `Infrastructure` namespaces, helping avoid repeated expensive work. |
+| `CR0003` | Usage | Warns whenever traditional loops or lambda-based iterations invoke services deeper in `Infrastructure` namespaces, helping avoid repeated expensive work. |
+| `CR0004` | Usage | Prevents services or repositories (and methods that depend on them) from being used inside `foreach` loops or lambda iterations. |
 
-Since these rules run inside the analyzer, any consuming project that references the NuGet package (or project reference with `OutputItemType="Analyzer"`) will surface `CR0001`/`CR0002`/`CR0003` as compiler warnings.
+Since these rules run inside the analyzer, any consuming project that references the NuGet package (or project reference with `OutputItemType="Analyzer"`) will surface `CR0001`–`CR0004` as compiler warnings.
 
 ### Violations in `SampleApp`
 
