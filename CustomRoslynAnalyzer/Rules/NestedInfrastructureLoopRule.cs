@@ -21,6 +21,7 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Immutable;
 using System.Diagnostics;
+using System.Linq;
 
 /// <summary>
 /// Analyzer rule that warns when infrastructure-layer services are called from within loop bodies.
@@ -183,6 +184,34 @@ internal sealed class NestedInfrastructureLoopRule : DiagnosticAnalyzer
         return false;
     }
 
+    private static bool IsInsideLambdaIteration(SyntaxNode node, SemanticModel semanticModel)
+    {
+        foreach (var ancestor in node.Ancestors())
+        {
+            if (ancestor is not SimpleLambdaExpressionSyntax && ancestor is not ParenthesizedLambdaExpressionSyntax)
+            {
+                continue;
+            }
+
+            var invocation = ancestor.Ancestors()
+                .OfType<InvocationExpressionSyntax>()
+                .FirstOrDefault();
+
+            if (invocation is null)
+            {
+                continue;
+            }
+
+            var methodSymbol = semanticModel.GetSymbolInfo(invocation).Symbol as IMethodSymbol;
+            if (methodSymbol?.Name == "ForEach")
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     private static bool IsInfrastructureSymbol(ISymbol? symbol)
     {
         if (symbol is null)
@@ -234,6 +263,16 @@ internal sealed class NestedInfrastructureLoopRule : DiagnosticAnalyzer
         return ns.IndexOf(InfrastructureNamespaceToken, StringComparison.OrdinalIgnoreCase) >= 0;
     }
 
+    private static bool IsInIterationContext(SyntaxNode node, SemanticModel semanticModel)
+    {
+        if (IsInsideLoopBody(node))
+        {
+            return true;
+        }
+
+        return IsInsideLambdaIteration(node, semanticModel);
+    }
+
     /// <param name="context">The syntax node analysis context.</param>
     /// <param name="descriptor">Descriptor used when reporting diagnostics.</param>
     /// <param name="methodInfrastructureCache">Cache for tracking methods that invoke infrastructure services.</param>
@@ -247,7 +286,7 @@ internal sealed class NestedInfrastructureLoopRule : DiagnosticAnalyzer
             return;
         }
 
-        if (!IsInsideLoopBody(invocation))
+        if (!IsInIterationContext(invocation, context.SemanticModel))
         {
             return;
         }
@@ -292,7 +331,7 @@ internal sealed class NestedInfrastructureLoopRule : DiagnosticAnalyzer
             return;
         }
 
-        if (!IsInsideLoopBody(creation))
+        if (!IsInIterationContext(creation, context.SemanticModel))
         {
             return;
         }
@@ -321,7 +360,7 @@ internal sealed class NestedInfrastructureLoopRule : DiagnosticAnalyzer
             return;
         }
 
-        if (!IsInsideLoopBody(implicitCreation))
+        if (!IsInIterationContext(implicitCreation, context.SemanticModel))
         {
             return;
         }

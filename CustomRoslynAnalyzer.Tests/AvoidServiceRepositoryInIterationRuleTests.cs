@@ -159,6 +159,68 @@ public sealed class OrderService
     }
 
     [Fact]
+    public async Task ReportsServiceUsageWithinLinqForEach()
+    {
+        const string testCode = @"
+using System.Collections.Generic;
+using System.Linq;
+
+public class Processor
+{
+    private readonly OrderService _service = new();
+
+    public void Process(IEnumerable<int> values)
+    {
+        values.ToList().ForEach(v => _service.{|#0:Save|}(v));
+    }
+}
+
+public sealed class OrderService
+{
+    public void Save(int value) { }
+}";
+
+        var expected = VerifyCS.Diagnostic(AvoidServiceRepositoryInIterationRule.DefaultDescriptor)
+            .WithLocation(0)
+            .WithArguments("OrderService");
+
+        await VerifyCS.VerifyAnalyzerAsync(testCode, expected);
+    }
+
+    [Fact]
+    public async Task ReportsServiceUsageInsideLinqSelect()
+    {
+        const string testCode = @"
+using System.Collections.Generic;
+using System.Linq;
+
+public class Processor
+{
+    private readonly OrderService _service = new();
+
+    public IEnumerable<int> Process(IEnumerable<int> values)
+    {
+        return values.Select(v =>
+        {
+            _service.{|#0:Save|}(v);
+            return v;
+        });
+    }
+}
+
+public sealed class OrderService
+{
+    public void Save(int value) { }
+}";
+
+        var expected = VerifyCS.Diagnostic(AvoidServiceRepositoryInIterationRule.DefaultDescriptor)
+            .WithLocation(0)
+            .WithArguments("OrderService");
+
+        await VerifyCS.VerifyAnalyzerAsync(testCode, expected);
+    }
+
+    [Fact]
     public async Task ReportsLambdaInvocationInsideLoopLikeCall()
     {
         const string testCode = @"

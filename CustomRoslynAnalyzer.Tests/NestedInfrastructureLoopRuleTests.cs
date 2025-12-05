@@ -119,6 +119,74 @@ namespace Sample.Infrastructure
         }
 
         [Fact]
+        public async Task ReportsInfrastructureCallInsideLambdaIteration()
+        {
+            const string testCode = @"
+using System.Collections.Generic;
+
+namespace Demo
+{
+    public class Processor
+    {
+        private readonly Sample.Infrastructure.Repository _repository = new();
+
+        public void Process(List<int> values)
+        {
+            values.ForEach(_ => _repository.{|#0:Save|}());
+        }
+    }
+}
+
+namespace Sample.Infrastructure
+{
+    public sealed class Repository
+    {
+        public void Save()
+        {
+        }
+    }
+}";
+
+            var expected = VerifyCS.Diagnostic(NestedInfrastructureLoopRule.DefaultDescriptor)
+                .WithLocation(0);
+
+            await VerifyCS.VerifyAnalyzerAsync(testCode, expected);
+        }
+
+        [Fact]
+        public async Task ReportsInfrastructureCreationInsideLambdaIteration()
+        {
+            const string testCode = @"
+using System.Collections.Generic;
+
+namespace Demo
+{
+    public class Processor
+    {
+        public void Process(List<int> values)
+        {
+            values.ForEach(_ =>
+            {
+                var repo = {|#0:new Sample.Infrastructure.Repository()|};
+            });
+        }
+    }
+}
+
+namespace Sample.Infrastructure
+{
+    public sealed class Repository
+    {
+    }
+}";
+
+            var expected = VerifyCS.Diagnostic(NestedInfrastructureLoopRule.DefaultDescriptor)
+                .WithLocation(0);
+
+            await VerifyCS.VerifyAnalyzerAsync(testCode, expected);
+        }
+
+        [Fact]
         public async Task ReportsInfrastructureCallInsideDoLoop()
         {
             const string testCode = @"
