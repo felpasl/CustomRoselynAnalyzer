@@ -20,6 +20,7 @@ using Microsoft.CodeAnalysis.Diagnostics;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Immutable;
+using System.Linq;
 
 /// <summary>
 /// Analyzer rule that prevents service or repository types from being used inside foreach loops or lambda bodies.
